@@ -1,0 +1,25 @@
+{
+  "name": "video-service",
+  "version": "1.0.0",
+  "description": "upload video",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prjctr-node-js/video-service.git"
+  },
+  "author": "nemodruk.andriy@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/prjctr-node-js/video-service/issues"
+  },
+  "homepage": "https://github.com/prjctr-node-js/video-service#readme",
+  "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "h264-mp4-encoder": "^1.0.12",
+    "uuid": "^8.3.2"
+  }
+}
