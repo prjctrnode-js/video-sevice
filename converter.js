@@ -1,7 +1,8 @@
 const fs = require('fs');
-const { v4: uuidv4 } = require('uuid');
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 const ffmpeg = require('fluent-ffmpeg');
+const { getFileName, generateRes } = require('./utils');
+const constants = require('./constants');
 
 ffmpeg.setFfmpegPath(ffmpegPath);
 
@@ -11,13 +12,10 @@ const converter = (res, fileType) => {
     .audioCodec('libmp3lame')
     .size('320x240')
     .on('error', (err) => {
-      res.writeHead(422, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ error: `An error occurred: ${err.message}` }));
-      console.log(`An error occurred: ${err.message}`);
+      generateRes(res, constants.ERROR, err);
     })
     .on('end', () => {
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ succes: 'file save' }));
+      generateRes(res, constants.RESPONSE_OK);
       fs.unlinkSync(`temp/temp.${fileType}`, (err) => {
         if (err) return console.log(err);
         console.log('file deleted successfully');
@@ -25,7 +23,7 @@ const converter = (res, fileType) => {
       });
       console.log('Processing finished !');
     })
-    .save(`output/${Date.now()}${uuidv4()}.mp4`);
+    .save(`output/${getFileName()}`);
 };
 
 module.exports = converter;

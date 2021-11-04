@@ -1,9 +1,9 @@
 const http = require('http');
 const url = require('url');
 const fs = require('fs');
-const { v4: uuidv4 } = require('uuid');
 const converter = require('./converter');
-const getExt = require('./utils');
+const { getExt, getFileName, generateRes } = require('./utils');
+const constants = require('./constants');
 
 const port = 3000;
 const allowedTypes = ['avi', 'mp4', 'mov'];
@@ -12,32 +12,24 @@ const server = http.createServer((req, res) => {
   const urlPath = url.parse(req.url, true).pathname;
   const fileType = getExt(req.headers['content-type']);
   if (req.method !== 'POST') {
-    res.writeHead(405, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ error: 'Method Not Allowed' }));
+    generateRes(res, constants.METHOD_NOT_ALLOWED);
     return;
   }
   switch (urlPath) {
     case '/upload':
       if (!allowedTypes.includes(fileType)) {
-        res.writeHead(415, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ error: 'Unsupported Media Type' }));
+        generateRes(res, constants.UNSUPPORTED_MEDIA_TYPE);
         return;
       }
       if (fileType === 'mp4') {
-        const writeStream = fs.createWriteStream(
-          `output/${Date.now()}${uuidv4()}.mp4`
-        );
+        const writeStream = fs.createWriteStream(`output/${getFileName()}`);
         req.pipe(writeStream);
         req.on('end', () => {
-          res.writeHead(200, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ succes: 'file save' }));
+          console.log(constants.RESPONSE_OK);
+          generateRes(res, constants.RESPONSE_OK);
         });
         writeStream.on('error', (err) => {
-          res.writeHead(422, { 'Content-Type': 'application/json' });
-          res.end(
-            JSON.stringify({ error: `An error occurred: ${err.message}` })
-          );
-          console.log(`An error occurred: ${err.message}`);
+          generateRes(res, null, err);
         });
       } else {
         const writeStream = fs.createWriteStream(`temp/temp.${fileType}`);
@@ -46,17 +38,12 @@ const server = http.createServer((req, res) => {
           converter(res, fileType);
         });
         writeStream.on('error', (err) => {
-          res.writeHead(422, { 'Content-Type': 'application/json' });
-          res.end(
-            JSON.stringify({ error: `An error occurred: ${err.message}` })
-          );
-          console.log(`An error occurred: ${err.message}`);
+          generateRes(res, constants.ERROR, err);
         });
       }
       break;
     default:
-      res.writeHead(404, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ error: 'the requested address was not found' }));
+      generateRes(res, constants.NOT_FOUND);
   }
 });
 
