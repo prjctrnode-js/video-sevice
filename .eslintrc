@@ -2,6 +2,9 @@
   "extends": ["plugin:prettier/recommended", "airbnb-base"],
   "plugins": ["prettier"],
   "rules": {
-    "prettier/prettier": "error"
+    "prettier/prettier": "error",
+    "no-console": "off",
+    "no-comma-dangle": "off",
+    "comma-dangle": ["error", "never"]
   }
 }

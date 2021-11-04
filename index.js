@@ -2,77 +2,61 @@ const http = require('http');
 const url = require('url');
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
-const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
-const ffmpeg = require('fluent-ffmpeg');
+const converter = require('./converter');
+const getExt = require('./utils');
 
 const port = 3000;
-const allowedTypes = ['video/mp4', 'video/quicktime', 'video/x-msvideo'];
-const ext = {
-  'video/mp4': 'mp4',
-  'video/quicktime': 'mov',
-  'video/x-msvideo': 'avi',
-};
+const allowedTypes = ['avi', 'mp4', 'mov'];
 
-ffmpeg.setFfmpegPath(ffmpegPath);
-
-const server = http.createServer(async (req, res) => {
+const server = http.createServer((req, res) => {
   const urlPath = url.parse(req.url, true).pathname;
+  const fileType = getExt(req.headers['content-type']);
   if (req.method !== 'POST') {
-    res.statusCode = 404;
-    res.end('Неверный метод запроса');
+    res.writeHead(405, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'Method Not Allowed' }));
     return;
   }
   switch (urlPath) {
     case '/upload':
-      if (!allowedTypes.includes(req.headers['content-type'])) {
-        res.writeHead(422, { 'Content-Type': 'text/plain' });
-        res.end(`status code=${res.statusCode}`);
+      if (!allowedTypes.includes(fileType)) {
+        res.writeHead(415, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Unsupported Media Type' }));
         return;
       }
-      if (req.headers['content-type'] === 'video/mp4') {
+      if (fileType === 'mp4') {
         const writeStream = fs.createWriteStream(
-          `output/${Date.now()}${uuidv4()}.mp4`,
+          `output/${Date.now()}${uuidv4()}.mp4`
         );
         req.pipe(writeStream);
-        res.writeHead(200, { 'Content-Type': 'text/plain' });
-        res.end(`status code=${res.statusCode}`);
+        req.on('end', () => {
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ succes: 'file save' }));
+        });
         writeStream.on('error', (err) => {
-          console.log(err);
+          res.writeHead(422, { 'Content-Type': 'application/json' });
+          res.end(
+            JSON.stringify({ error: `An error occurred: ${err.message}` })
+          );
+          console.log(`An error occurred: ${err.message}`);
         });
       } else {
-        const writeStream = fs.createWriteStream(
-          `temp/temp.${ext[req.headers['content-type']]}`,
-        );
+        const writeStream = fs.createWriteStream(`temp/temp.${fileType}`);
         req.pipe(writeStream);
-        ffmpeg(`temp/temp.${ext[req.headers['content-type']]}`)
-          .videoCodec('libx264')
-          .audioCodec('libmp3lame')
-          .size('320x240')
-          .on('error', (err) => {
-            console.log(`An error occurred: ${err.message}`);
-          })
-          .on('end', () => {
-            fs.unlinkSync(
-              `temp/temp.${ext[req.headers['content-type']]}`,
-              (err) => {
-                if (err) return console.log(err);
-                console.log('file deleted successfully');
-                return false;
-              },
-            );
-            console.log('Processing finished !');
-          })
-          .save(`output/${Date.now()}${uuidv4()}.mp4`);
-        res.writeHead(200, { 'Content-Type': 'text/plain' });
-        res.end(`status code=${res.statusCode}`);
+        req.on('end', () => {
+          converter(res, fileType);
+        });
         writeStream.on('error', (err) => {
-          console.log(err);
+          res.writeHead(422, { 'Content-Type': 'application/json' });
+          res.end(
+            JSON.stringify({ error: `An error occurred: ${err.message}` })
+          );
+          console.log(`An error occurred: ${err.message}`);
         });
       }
       break;
     default:
-      res.statusCode = 404;
-      res.end('Проверьте адрес');
+      res.writeHead(404, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'the requested address was not found' }));
   }
 });
 
