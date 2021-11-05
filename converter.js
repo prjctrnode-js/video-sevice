@@ -10,9 +10,13 @@ const converter = (res, fileType) => {
   ffmpeg(`temp/temp.${fileType}`)
     .videoCodec('libx264')
     .audioCodec('libmp3lame')
-    .size('320x240')
     .on('error', (err) => {
       generateRes(res, constants.ERROR, err);
+      fs.unlinkSync(`temp/temp.${fileType}`, (error) => {
+        if (error) return console.log(error);
+        console.log('file deleted successfully');
+        return false;
+      });
     })
     .on('end', () => {
       generateRes(res, constants.RESPONSE_OK);
