@@ -1,4 +1,4 @@
-const { getExt } = require('../utils');
+const { getExt } = require('../controllers/utils');
 const allowedTypes = ['avi', 'mp4', 'mov'];
 
 const checkExt = async (ctx, next) => {
