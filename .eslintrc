@@ -1,10 +1,24 @@
+// {
+//   "extends": ["plugin:prettier/recommended", "airbnb-base"],
+//   "plugins": ["prettier"],
+//   "rules": {
+//     "prettier/prettier": "error",
+//     "no-console": "off",
+//     "no-comma-dangle": "off",
+//     "comma-dangle": ["error", "only-multiline"]
+//   }
+// }
+
 {
-  "extends": ["plugin:prettier/recommended", "airbnb-base"],
+  "extends": ["airbnb", "prettier", "plugin:node/recommended"],
   "plugins": ["prettier"],
   "rules": {
     "prettier/prettier": "error",
+    "no-unused-vars": "warn",
     "no-console": "off",
-    "no-comma-dangle": "off",
-    "comma-dangle": ["error", "only-multiline"]
+    "func-names": "off",
+    "no-process-exit": "off",
+    "object-shorthand": "off",
+    "class-methods-use-this": "off"
   }
 }
