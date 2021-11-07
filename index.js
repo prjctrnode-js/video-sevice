@@ -10,9 +10,8 @@ const app = new Koa();
 const router = new Router();
 
 app.use(bodyparser());
-app.use(checkExt);
 
-router.post('/upload', async (ctx) => {
+router.post('/upload', checkExt, async (ctx) => {
   await createStream(ctx);
   await converter(ctx);
 });
