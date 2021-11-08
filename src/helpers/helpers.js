@@ -1,6 +1,6 @@
 const { v4: uuidv4 } = require('uuid');
 
-const getExt = (fileType) => {
+const getExtension = (fileType) => {
   const ext = {
     'video/mp4': 'mp4',
     'video/quicktime': 'mov',
@@ -14,4 +14,4 @@ const getFileName = () => {
   return fileName;
 };
 
-module.exports = { getExt, getFileName };
+module.exports = { getExtension, getFileName };
