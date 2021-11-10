@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon ./index.js"
+    "start": "nodemon ./src/index.js"
   },
   "repository": {
     "type": "git",
@@ -19,8 +19,11 @@
   "homepage": "https://github.com/prjctr-node-js/video-service#readme",
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
+    "@koa/router": "^10.1.1",
     "fluent-ffmpeg": "^2.1.2",
     "h264-mp4-encoder": "^1.0.12",
+    "koa": "^2.13.4",
+    "koa-bodyparser": "^4.3.0",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
