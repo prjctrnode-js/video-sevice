@@ -2,6 +2,7 @@ const fs = require('fs');
 const { getExtension, getFileName } = require('../helpers/helpers');
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 const ffmpeg = require('fluent-ffmpeg');
+const logger = require('../helpers/Logger');
 
 ffmpeg.setFfmpegPath(ffmpegPath);
 
@@ -17,18 +18,31 @@ const uploadVideo = async (ctx) =>
         .on('error', (err) => {
           fs.unlinkSync(`temp/temp.${fileExt}`, (error) => {
             if (error) return console.log(error);
-            console.log('file deleted successfully');
+            logger.log({
+              message: `file deleted successfully`,
+              level: process.env.NODE_ENV === 'dev' ? 'debug' : 'info',
+            });
             return false;
           });
           reject({ status: 422, message: `An error occurred: ${err}` });
         })
         .on('end', () => {
           fs.unlinkSync(`temp/temp.${fileExt}`, (err) => {
-            if (err) return console.log(err);
-            console.log('file deleted successfully');
+            if (err)
+              return logger.log({
+                message: `${err}`,
+                level: process.env.NODE_ENV === 'dev' ? 'debug' : 'info',
+              });
+            logger.log({
+              message: `file deleted successfully`,
+              level: process.env.NODE_ENV === 'dev' ? 'debug' : 'info',
+            });
             return false;
           });
-          console.log('Processing finished !');
+          logger.log({
+            message: `Processing finished !`,
+            level: process.env.NODE_ENV === 'dev' ? 'debug' : 'info',
+          });
           resolve({ status: 200, message: { succes: 'file save' } });
         })
         .save(`output/${getFileName()}`);
