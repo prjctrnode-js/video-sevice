@@ -2,7 +2,7 @@ const fs = require('fs');
 const { getExtension, getFileName } = require('../helpers/helpers');
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 const ffmpeg = require('fluent-ffmpeg');
-const logger = require('../helpers/Logger');
+const logger = require('../helpers/logger');
 
 ffmpeg.setFfmpegPath(ffmpegPath);
 

@@ -4,7 +4,7 @@ const router = require('./middlewares/routes/router');
 require('dotenv-defaults').config();
 const errorHandler = require('./middlewares/errorHandler');
 const loggerMiddleware = require('./middlewares/loggerMiddleware');
-const logger = require('./helpers/Logger');
+const logger = require('./helpers/logger');
 
 const app = new Koa();
 app.use(loggerMiddleware);

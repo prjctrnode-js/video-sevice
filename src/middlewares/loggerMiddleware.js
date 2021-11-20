@@ -1,4 +1,4 @@
-const logger = require('../helpers/Logger');
+const logger = require('../helpers/logger');
 
 const loggerMiddleware = async (ctx, next) => {
   logger.log({

@@ -3,7 +3,7 @@ const allowedTypes = ['avi', 'mp4', 'mov'];
 
 const checkExtension = async (ctx, next) => {
   if (!allowedTypes.includes(getExtension(ctx.headers['content-type']))) {
-    ctx.throw(415, JSON.stringify({ error: 'Unsupported Media Type' }));
+    ctx.throw(415, 'Unsupported Media Type');
     return;
   } else {
     await next();
