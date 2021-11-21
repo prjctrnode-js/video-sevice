@@ -3,12 +3,12 @@ const logger = require('../helpers/logger');
 const loggerMiddleware = async (ctx, next) => {
   logger.log({
     message: `-->${ctx.request.method} ${ctx.request.url}`,
-    level: process.env.NODE_ENV === 'dev' ? 'debug' : 'info',
+    level: 'info',
   });
   await next();
   logger.log({
     message: `<--${ctx.request.method} ${ctx.request.url} ${ctx.response.status}`,
-    level: process.env.NODE_ENV === 'dev' ? 'debug' : 'info',
+    level: 'info',
   });
 };
 

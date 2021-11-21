@@ -20,7 +20,7 @@ const uploadVideo = async (ctx) =>
             if (error) return console.log(error);
             logger.log({
               message: `file deleted successfully`,
-              level: process.env.NODE_ENV === 'dev' ? 'debug' : 'info',
+              level: 'info',
             });
             return false;
           });
@@ -31,17 +31,17 @@ const uploadVideo = async (ctx) =>
             if (err)
               return logger.log({
                 message: `${err}`,
-                level: process.env.NODE_ENV === 'dev' ? 'debug' : 'info',
+                level: 'info',
               });
             logger.log({
               message: `file deleted successfully`,
-              level: process.env.NODE_ENV === 'dev' ? 'debug' : 'info',
+              level: 'info',
             });
             return false;
           });
           logger.log({
             message: `Processing finished !`,
-            level: process.env.NODE_ENV === 'dev' ? 'debug' : 'info',
+            level: 'info',
           });
           resolve({ status: 200, message: { succes: 'file save' } });
         })

@@ -16,6 +16,6 @@ app.use(router.allowedMethods());
 app.listen(process.env.PORT, () => {
   logger.log({
     message: `Server running at port ${process.env.PORT}`,
-    level: process.env.NODE_ENV === 'dev' ? 'debug' : 'info',
+    level: 'info',
   });
 });
