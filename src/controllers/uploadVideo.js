@@ -9,6 +9,7 @@ ffmpeg.setFfmpegPath(ffmpegPath);
 const uploadVideo = async (ctx) =>
   new Promise((resolve, reject) => {
     const fileExt = getExtension(ctx.headers['content-type']);
+    const fileName = getFileName();
     const writeStream = fs.createWriteStream(`temp/temp.${fileExt}`);
     ctx.req.pipe(writeStream);
     ctx.req.on('end', async () => {
@@ -43,9 +44,13 @@ const uploadVideo = async (ctx) =>
             message: `Processing finished !`,
             level: 'info',
           });
-          resolve({ status: 200, message: { succes: 'file save' } });
+          resolve({
+            status: 201,
+            message: 'success',
+            fileName: fileName,
+          });
         })
-        .save(`output/${getFileName()}`);
+        .save(`output/${fileName}`);
     });
     writeStream.on('error', (err) => {
       reject({ status: 422, message: `An error occurred: ${err}` });
