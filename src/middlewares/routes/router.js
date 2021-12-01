@@ -2,6 +2,7 @@ const Router = require('@koa/router');
 const fs = require('fs');
 const router = new Router();
 const uploadVideo = require('../../controllers/uploadVideo');
+const getVideo = require('../../controllers/getVideo');
 const checkExtension = require('../checkExtension');
 const pJson = require('../../../package.json');
 const db = require('../../db/models');
@@ -53,6 +54,10 @@ router.get('/video', async (ctx) => {
       },
     }),
   };
+});
+
+router.get('/video/getVideo', async (ctx) => {
+  await getVideo(ctx);
 });
 
 router.get('/video/health', async (ctx) => {
