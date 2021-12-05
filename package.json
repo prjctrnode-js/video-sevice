@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cross-env NODE_ENV=prod node ./src/index.js",
-    "dev": "cross-env NODE_ENV=dev nodemon ./src/index.js"
+    "start": "cross-env NODE_ENV=production node ./src/index.js",
+    "dev": "cross-env NODE_ENV=development nodemon ./src/index.js"
   },
   "repository": {
     "type": "git",
@@ -25,6 +25,7 @@
     "dotenv-defaults": "^3.0.0",
     "fluent-ffmpeg": "^2.1.2",
     "h264-mp4-encoder": "^1.0.12",
+    "joi": "^17.5.0",
     "koa": "^2.13.4",
     "koa-bodyparser": "^4.3.0",
     "pg": "^8.7.1",

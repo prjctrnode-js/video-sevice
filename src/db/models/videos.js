@@ -1,34 +1,25 @@
-const Sequelize = require('sequelize');
-
-module.exports = function (sequelize) {
-  return sequelize.define(
-    'videos',
+'use strict';
+const { Model } = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  class Videos extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      // define association here
+    }
+  }
+  Videos.init(
     {
-      id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        primaryKey: true,
-        autoIncrement: true,
-      },
-      fileName: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      userId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-      },
-      createdAt: {
-        type: Sequelize.DATE,
-        allowNull: false,
-      },
-      updatedAt: {
-        type: Sequelize.DATE,
-        allowNull: false,
-      },
+      userId: DataTypes.STRING,
+      fileName: DataTypes.STRING,
     },
     {
-      tableName: 'videos',
+      sequelize,
+      modelName: 'Videos',
     }
   );
+  return Videos;
 };

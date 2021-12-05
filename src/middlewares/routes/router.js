@@ -7,10 +7,10 @@ const checkExtension = require('../checkExtension');
 const pJson = require('../../../package.json');
 const db = require('../../db/models');
 
-router.post('/video', checkExtension, async (ctx) => {
+router.post('/videos', checkExtension, async (ctx) => {
   const { status, message, fileName } = await uploadVideo(ctx);
   const userId = ctx.request.query.userId;
-  const data = await db.videos.create({
+  const data = await db.Videos.create({
     fileName: fileName,
     userId: userId,
   });
@@ -19,8 +19,8 @@ router.post('/video', checkExtension, async (ctx) => {
   ctx.body = JSON.stringify({ success: true, message: message, data: data });
 });
 
-router.delete('/video', async (ctx) => {
-  const { fileName } = await db.videos.findOne({
+router.delete('/videos', async (ctx) => {
+  const { fileName } = await db.Videos.findOne({
     where: {
       id: ctx.request.query.id,
     },
@@ -33,7 +33,7 @@ router.delete('/video', async (ctx) => {
     });
     return false;
   });
-  await db.videos.destroy({
+  await db.Videos.destroy({
     where: {
       id: ctx.request.query.id,
     },
@@ -44,23 +44,27 @@ router.delete('/video', async (ctx) => {
     });
 });
 
-router.get('/video', async (ctx) => {
-  ctx.body = {
+router.get('/videos', async (ctx) => {
+  const userId = ctx.request.query.id;
+  const limit = ctx.request.query.limit;
+  const res = {
     success: true,
     message: 'Success',
-    data: await db.videos.findAll({
+    data: await db.Videos.findAll({
       where: {
-        userId: ctx.request.query.userId,
+        userId,
       },
+      limit,
     }),
   };
+  ctx.body = res;
 });
 
-router.get('/video/getVideo', async (ctx) => {
+router.get('/videos/video', async (ctx) => {
   await getVideo(ctx);
 });
 
-router.get('/video/health', async (ctx) => {
+router.get('/videos/health', async (ctx) => {
   ctx.set({ 'Content-Type': 'application/json' });
   ctx.status = 200;
   ctx.body = JSON.stringify({

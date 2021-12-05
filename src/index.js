@@ -5,6 +5,7 @@ require('dotenv-defaults').config();
 const errorHandler = require('./middlewares/errorHandler');
 const loggerMiddleware = require('./middlewares/loggerMiddleware');
 const logger = require('./helpers/logger');
+const validatorMiddleware = require('./middlewares/validatorMiddleware');
 
 const app = new Koa();
 app.use(loggerMiddleware);

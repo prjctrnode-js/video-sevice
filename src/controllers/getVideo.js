@@ -7,7 +7,7 @@ const getVideo = (ctx) =>
   new Promise(async (resolve, reject) => {
     const range = ctx.headers.range;
     if (range) {
-      const { fileName } = await db.videos.findOne({
+      const { fileName } = await db.Videos.findOne({
         where: {
           id: ctx.request.query.id,
         },
