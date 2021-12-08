@@ -1,4 +1,3 @@
-'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Videos', {
@@ -6,27 +5,27 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER
       },
       fileName: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: false
       },
       userId: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: false
       },
       createdAt: {
         type: Sequelize.DATE,
-        allowNull: false,
+        allowNull: false
       },
       updatedAt: {
         type: Sequelize.DATE,
-        allowNull: false,
-      },
+        allowNull: false
+      }
     });
   },
-  down: async (queryInterface, Sequelize) => {
+  down: async (queryInterface) => {
     await queryInterface.dropTable('Videos');
-  },
+  }
 };

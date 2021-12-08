@@ -1,8 +1,8 @@
 const fs = require('fs');
-const { getExtension, getFileName } = require('../helpers/helpers');
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 const ffmpeg = require('fluent-ffmpeg');
 const logger = require('../helpers/logger');
+const { getExtension, getFileName } = require('../helpers/helpers');
 
 ffmpeg.setFfmpegPath(ffmpegPath);
 
@@ -18,42 +18,48 @@ const uploadVideo = async (ctx) =>
         .audioCodec('libmp3lame')
         .on('error', (err) => {
           fs.unlinkSync(`temp/temp.${fileExt}`, (error) => {
-            if (error) return console.log(error);
+            if (error)
+              return logger.log({
+                message: `${error}`,
+                level: 'info'
+              });
             logger.log({
               message: `file deleted successfully`,
-              level: 'info',
+              level: 'info'
             });
             return false;
           });
-          reject({ status: 422, message: `An error occurred: ${err}` });
+          reject(
+            ctx.throw({ status: 422, message: `An error occurred: ${err}` })
+          );
         })
         .on('end', () => {
           fs.unlinkSync(`temp/temp.${fileExt}`, (err) => {
             if (err)
               return logger.log({
                 message: `${err}`,
-                level: 'info',
+                level: 'info'
               });
             logger.log({
               message: `file deleted successfully`,
-              level: 'info',
+              level: 'info'
             });
             return false;
           });
           logger.log({
             message: `Processing finished !`,
-            level: 'info',
+            level: 'info'
           });
           resolve({
             status: 201,
             message: 'success',
-            fileName: fileName,
+            fileName
           });
         })
         .save(`output/${fileName}`);
     });
     writeStream.on('error', (err) => {
-      reject({ status: 422, message: `An error occurred: ${err}` });
+      reject(ctx.throw({ status: 422, message: `An error occurred: ${err}` }));
     });
   });
 

@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+
 const basename = path.basename(__filename);
 const allRoutes = {};
 const compose = (middleware) => {
@@ -31,11 +32,10 @@ const compose = (middleware) => {
 
 const addRoutes = () => {
   fs.readdirSync(__dirname)
-    .filter((file) => {
-      return (
+    .filter(
+      (file) =>
         file.indexOf('.') !== 0 && file !== basename && file.slice(-3) === '.js'
-      );
-    })
+    )
     .forEach((file) => {
       const route = require(path.join(__dirname, file));
       allRoutes[file] = route;

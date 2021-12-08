@@ -1,27 +1,28 @@
 const fs = require('fs');
 const path = require('path');
-const db = require('../db/models');
 const axios = require('axios');
+const db = require('../db/models');
 
 const getVideo = (ctx) =>
-  new Promise(async (resolve, reject) => {
-    const range = ctx.headers.range;
+  new Promise(async (resolve) => {
+    const { range } = ctx.headers;
+    const { fileName } = await db.Videos.findOne({
+      where: {
+        id: ctx.request.query.id
+      }
+    });
+    const videoPath = path.join(__dirname, `../../output/${fileName}`);
+    const videoSize = fs.statSync(videoPath).size;
     if (range) {
-      const { fileName } = await db.Videos.findOne({
-        where: {
-          id: ctx.request.query.id,
-        },
-      });
       await axios({
         method: 'post',
         url: `http://127.0.0.1:3001/history`,
         data: {
           userId: 3,
-          videoId: ctx.request.query.id,
-        },
+          videoId: ctx.request.query.id
+        }
       });
-      const videoPath = path.join(__dirname, `../../output/${fileName}`);
-      const videoSize = fs.statSync(videoPath).size;
+
       const CHUNK_SIZE = 10 ** 5; // 1MB
       const start = Number(range.replace(/\D/g, ''));
       const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
@@ -30,7 +31,7 @@ const getVideo = (ctx) =>
         'Content-Range': `bytes ${start}-${end}/${videoSize}`,
         'Accept-Ranges': 'bytes',
         'Content-Length': contentLength,
-        'Content-Type': 'video/mp4',
+        'Content-Type': 'video/mp4'
       };
       fs.createReadStream(videoPath, { start, end }).pipe(ctx.res);
       ctx.status = 206;
@@ -40,7 +41,7 @@ const getVideo = (ctx) =>
       const headers = {
         'Content-Length': videoSize,
         'Content-Type': 'video/mp4',
-        'Accept-Ranges': 'bytes',
+        'Accept-Ranges': 'bytes'
       };
       ctx.response.set(headers);
       ctx.status = 200;
