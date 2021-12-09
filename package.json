@@ -28,6 +28,7 @@
     "joi": "^17.5.0",
     "koa": "^2.13.4",
     "koa-bodyparser": "^4.3.0",
+    "koa-combine-routers": "^4.0.2",
     "pg": "^8.7.1",
     "sequelize": "^6.12.0-alpha.1",
     "uuid": "^8.3.2",
