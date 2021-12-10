@@ -3,7 +3,7 @@ const path = require('path');
 const axios = require('axios');
 const db = require('../db/models');
 
-const getVideo = (ctx) =>
+const getVideo = async (ctx) =>
   new Promise(async (resolve) => {
     const { range } = ctx.headers;
     const { fileName } = await db.Videos.findOne({
