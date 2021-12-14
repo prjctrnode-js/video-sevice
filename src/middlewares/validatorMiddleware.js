@@ -2,8 +2,8 @@ const Joi = require('joi');
 const logger = require('../helpers/logger');
 
 const schema = Joi.object({
-  id: Joi.number().integer(),
-  userId: Joi.number().integer()
+  id: Joi.number().integer().required(),
+  userId: Joi.number().integer().required()
 });
 
 const validatorMiddleware = async (ctx, next) => {

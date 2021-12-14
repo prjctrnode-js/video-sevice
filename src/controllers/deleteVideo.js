@@ -3,9 +3,10 @@ const logger = require('../helpers/logger');
 const db = require('../db/models');
 
 const deleteVideo = async (ctx) => {
+  const { id } = ctx.params;
   const { fileName } = await db.Videos.findOne({
     where: {
-      id: ctx.request.query.id
+      id
     }
   });
   fs.unlinkSync(`output/${fileName}`, (error) => {

@@ -1,3 +1,4 @@
+/* eslint-disable no-async-promise-executor */
 const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
@@ -6,9 +7,10 @@ const db = require('../db/models');
 const getVideo = async (ctx) =>
   new Promise(async (resolve) => {
     const { range } = ctx.headers;
+    const { id } = ctx.params;
     const { fileName } = await db.Videos.findOne({
       where: {
-        id: ctx.request.query.id
+        id
       }
     });
     const videoPath = path.join(__dirname, `../../output/${fileName}`);
@@ -16,13 +18,12 @@ const getVideo = async (ctx) =>
     if (range) {
       await axios({
         method: 'post',
-        url: `http://127.0.0.1:3001/history`,
+        url: process.env.HISTORY_POST,
         data: {
           userId: 3,
-          videoId: ctx.request.query.id
+          videoId: ctx.params.id
         }
       });
-
       const CHUNK_SIZE = 10 ** 5; // 1MB
       const start = Number(range.replace(/\D/g, ''));
       const end = Math.min(start + CHUNK_SIZE, videoSize - 1);

@@ -12,9 +12,9 @@ const videosRoute = new Router();
 
 healthRoute.get('/videos/health', videosHealth);
 videosRoute.post('/videos', checkExtension, createVideo);
-videosRoute.get('/videos/video', getVideo);
+videosRoute.get('/videos/:id', getVideo);
 videosRoute.get('/videos', getUsersVideos);
-videosRoute.delete('/videos', deleteVideo);
+videosRoute.delete('/videos/:id', deleteVideo);
 
 const router = combineRouters(healthRoute, videosRoute);
 
