@@ -1,29 +1,31 @@
 const db = require('../db/models');
 
-const getUsersVideos = async (ctx) => {
-  const { userId } = ctx.request.query;
-  const { limit } = ctx.request.query;
-  const user = await db.Users.findOne({
+const getUsersVideos = async (userId, limit) => {
+  const user = await db.Videos.findOne({
     where: {
       id: userId
     }
   });
   if (!user) {
-    ctx.status = 404;
-    ctx.body = { success: false, message: 'video is not found' };
-    return;
+    return {
+      status: 404,
+      body: { success: false, message: 'video is not found' }
+    };
   }
-  const res = {
-    success: true,
-    message: 'Success',
-    data: await db.Videos.findAll({
-      where: {
-        userId
-      },
-      limit
-    })
+  const data = await db.Videos.findAll({
+    where: {
+      userId
+    },
+    limit
+  });
+  return {
+    status: 200,
+    body: {
+      success: true,
+      message: 'Success',
+      data
+    }
   };
-  ctx.body = res;
 };
 
 module.exports = getUsersVideos;

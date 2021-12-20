@@ -2,8 +2,7 @@ const fs = require('fs');
 const logger = require('../helpers/logger');
 const db = require('../db/models');
 
-const deleteVideo = async (ctx) => {
-  const { id } = ctx.params;
+const deleteVideo = async (id) => {
   const { fileName } = await db.Videos.findOne({
     where: {
       id
@@ -18,12 +17,15 @@ const deleteVideo = async (ctx) => {
   });
   await db.Videos.destroy({
     where: {
-      id: ctx.request.query.id
+      id
     }
   });
-  ctx.body = {
-    success: true,
-    message: 'file deleted successfully'
+  return {
+    status: 200,
+    body: {
+      success: true,
+      message: 'file deleted successfully'
+    }
   };
 };
 

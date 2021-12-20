@@ -1,24 +1,20 @@
-const Joi = require('joi');
 const logger = require('../helpers/logger');
+const shemas = require('../helpers/validationsShemas');
 
-const schema = Joi.object({
-  id: Joi.number().integer().required(),
-  userId: Joi.number().integer().required()
-});
-
-const validatorMiddleware = async (ctx, next) => {
+const validatorMiddleware = (validator, data) => async (ctx, next) => {
   try {
-    await schema.validateAsync({
-      id: ctx.request.body.id,
-      userId: ctx.request.query.userId
-    });
+    if (!Object.prototype.hasOwnProperty.call(shemas, validator)) {
+      throw new Error(`'${validator}' validator is not exist`);
+    }
+    await shemas[validator].validateAsync(data(ctx));
     await next();
   } catch (err) {
     logger.log({
       message: err,
       level: 'info'
     });
-    ctx.throw(400, { error: err });
+    ctx.status = 400;
+    ctx.body = { success: false, error: err.message };
   }
 };
 

@@ -18,7 +18,7 @@ const getVideo = async (ctx) =>
     if (range) {
       await axios({
         method: 'post',
-        url: process.env.HISTORY_POST,
+        url: "http://127.0.0.1:3008/history",
         data: {
           userId: 3,
           videoId: ctx.params.id
