@@ -7,10 +7,8 @@ const getUsersVideos = async (userId, limit) => {
     }
   });
   if (!user) {
-    return {
-      status: 404,
-      body: { success: false, message: 'video is not found' }
-    };
+    const error = { statusCode: 404, message: 'video is not found' };
+    throw error;
   }
   const data = await db.Videos.findAll({
     where: {
