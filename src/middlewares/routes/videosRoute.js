@@ -14,11 +14,11 @@ videosRoute.post(
   isAuth,
   checkExtension,
   validatorMiddleware('videoUserId', (ctx) => ({
-    userId: ctx.request.query.userId
+    userId: ctx.user.id
   })),
   async (ctx) => {
     const { status, message, fileName } = await uploadVideo(ctx);
-    const { userId } = ctx.request.query;
+    const userId = ctx.user.id;
     const data = await db.Videos.create({
       fileName,
       userId
@@ -28,7 +28,7 @@ videosRoute.post(
     ctx.body = JSON.stringify({ success: true, message, data });
   }
 );
-videosRoute.get('/videos/:id', isAuth, getVideo);
+videosRoute.get('/videos/:id', getVideo);
 videosRoute.get(
   '/videos',
   isAuth,
