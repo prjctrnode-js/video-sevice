@@ -20,7 +20,7 @@ const getVideo = async (ctx) =>
       await axios({
         method: 'post',
         url: `http://${process.env.GATEWAY_HOST}:${process.env.GATEWAY_PORT}/${process.env.GATEWAY_HISTORY_PATH}`,
-        headers: { 'g-token': process.env.HISTORY_TOKEN },
+        headers: { 'g-token': process.env.GATEWAY_TOKEN },
         data: {
           userId,
           videoId: ctx.params.id
