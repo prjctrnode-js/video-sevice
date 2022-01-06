@@ -33,10 +33,10 @@ videosRoute.get(
   '/videos',
   isAuth,
   validatorMiddleware('videoUserId', (ctx) => ({
-    userId: ctx.request.query.userId
+    userId: ctx.user.id
   })),
   async (ctx) => {
-    const { userId } = ctx.request.query;
+    const  userId  = ctx.user.id;
     const { limit } = ctx.request.query;
     const { status, body } = await getUsersVideos(userId, limit);
     ctx.status = status;
