@@ -1,7 +1,6 @@
 /* eslint-disable no-async-promise-executor */
 const fs = require('fs');
 const path = require('path');
-const axios = require('axios');
 const db = require('../db/models');
 const amqp = require('../services/amqp');
 
@@ -18,16 +17,13 @@ const getVideo = async (ctx) =>
     const videoPath = path.join(__dirname, `../../output/${fileName}`);
     const videoSize = fs.statSync(videoPath).size;
     if (range) {
-      await amqp.publish('testData', 'history');
-      await axios({
-        method: 'post',
-        url: `http://${process.env.GATEWAY_HOST}:${process.env.GATEWAY_PORT}/${process.env.GATEWAY_HISTORY_PATH}`,
-        headers: { 'g-token': process.env.GATEWAY_TOKEN },
-        data: {
+      await amqp.publish(
+        {
           userId,
           videoId: ctx.params.id
-        }
-      });
+        },
+        'history'
+      );
       const CHUNK_SIZE = 10 ** 5; // 1MB
       const start = Number(range.replace(/\D/g, ''));
       const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
