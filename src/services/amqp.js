@@ -1,37 +1,49 @@
 const amqp = require('amqplib');
+const logger = require('../helpers/logger');
 
 const EXCHANGE_NAME = 'history';
-class AMQP {
-  async connect() {
-    const connection = await amqp.connect('amqp://localhost');
-    console.log('rabbit connected');
+const CONNECTION_URL = 'amqp://localhost';
+let ch = null;
 
-    const channel = await connection.createChannel();
-    console.log('channel opened');
-
-    await channel.assertExchange((EXCHANGE_NAME, 'direct'));
-
-    await channel.assertQueue('hist', {
-      durable: false
+const connect = async () => {
+  try {
+    const connection = await amqp.connect(CONNECTION_URL);
+    logger.log({
+      message: 'rabbitmq connected',
+      level: 'info'
     });
-
-    this.channel = channel;
+    const channel = await connection.createChannel();
+    logger.log({
+      message: 'rabbitmq channel opened',
+      level: 'info'
+    });
+    await channel.assertExchange(EXCHANGE_NAME, 'direct');
+    logger.log({
+      message: 'rabbitmq exchange asserted',
+      level: 'info'
+    });
+    ch = channel;
+  } catch (error) {
+    logger.log({
+      message: error.message,
+      level: 'info'
+    });
   }
+};
 
-  async publish(data, event) {
-    const isOk = await this.channel.publish(
-      EXCHANGE_NAME,
-      event,
-      Buffer.from(JSON.stringify(data))
-    );
-  }
-}
-
-let amqpInstance;
+const publishToQueue = async (data, event) => {
+  await ch.publish(EXCHANGE_NAME, event, Buffer.from(JSON.stringify(data)));
+};
+process.on('exit', () => {
+  ch.close();
+  logger.log({
+    message: 'Closing rabbitmq channel',
+    level: 'info'
+  });
+});
 
 (async () => {
-  amqpInstance = new AMQP();
-  await amqpInstance.connect();
+  await connect();
 })();
 
-module.exports = amqpInstance;
+module.exports = publishToQueue;

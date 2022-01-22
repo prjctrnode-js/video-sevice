@@ -2,7 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 const db = require('../db/models');
-const amqp = require('../services/amqp');
+const publishToQueue = require('../services/amqp');
 
 const getVideo = async (ctx) =>
   new Promise(async (resolve) => {
@@ -17,7 +17,7 @@ const getVideo = async (ctx) =>
     const videoPath = path.join(__dirname, `../../output/${fileName}`);
     const videoSize = fs.statSync(videoPath).size;
     if (range) {
-      await amqp.publish(
+      await publishToQueue(
         {
           userId,
           videoId: ctx.params.id
