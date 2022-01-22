@@ -23,6 +23,13 @@ const connect = async () => {
       level: 'info'
     });
     ch = channel;
+    process.on('exit', () => {
+      ch.close();
+      logger.log({
+        message: 'Closing rabbitmq channel',
+        level: 'info'
+      });
+    });
   } catch (error) {
     logger.log({
       message: error.message,
@@ -31,19 +38,12 @@ const connect = async () => {
   }
 };
 
-const publishToQueue = async (data, event) => {
+const publishToHistory = async (data, event) => {
   await ch.publish(EXCHANGE_NAME, event, Buffer.from(JSON.stringify(data)));
 };
-process.on('exit', () => {
-  ch.close();
-  logger.log({
-    message: 'Closing rabbitmq channel',
-    level: 'info'
-  });
-});
 
 (async () => {
   await connect();
 })();
 
-module.exports = publishToQueue;
+module.exports = publishToHistory;
