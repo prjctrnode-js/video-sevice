@@ -12,7 +12,7 @@ const getUsersVideos = async (userId, limit) => {
   }
   const data = await db.Videos.findAll({
     where: {
-      id: userId
+      userId
     },
     limit
   });
