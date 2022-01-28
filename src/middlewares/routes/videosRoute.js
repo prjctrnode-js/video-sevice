@@ -6,17 +6,19 @@ const getUsersVideos = require('../../controllers/getUsersVideos');
 const deleteVideo = require('../../controllers/deleteVideo');
 const validatorMiddleware = require('../validatorMiddleware');
 const db = require('../../db/models');
+const isAuth = require('../isAuth');
 
 const videosRoute = new Router();
 videosRoute.post(
   '/videos',
+  isAuth,
   checkExtension,
   validatorMiddleware('videoUserId', (ctx) => ({
-    userId: ctx.request.query.userId
+    userId: ctx.user.id
   })),
   async (ctx) => {
     const { status, message, fileName } = await uploadVideo(ctx);
-    const { userId } = ctx.request.query;
+    const userId = ctx.user.id;
     const data = await db.Videos.create({
       fileName,
       userId
@@ -29,6 +31,7 @@ videosRoute.post(
 videosRoute.get('/videos/:id', getVideo);
 videosRoute.get(
   '/videos',
+  isAuth,
   validatorMiddleware('videoUserId', (ctx) => ({
     userId: ctx.request.query.userId
   })),
@@ -42,6 +45,7 @@ videosRoute.get(
 );
 videosRoute.delete(
   '/videos/:id',
+  isAuth,
   validatorMiddleware('videoId', (ctx) => ({
     id: ctx.params.id
   })),

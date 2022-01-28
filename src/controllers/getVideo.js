@@ -8,6 +8,7 @@ const getVideo = async (ctx) =>
   new Promise(async (resolve) => {
     const { range } = ctx.headers;
     const { id } = ctx.params;
+    const { userId } = ctx.request.query;
     const { fileName } = await db.Videos.findOne({
       where: {
         id
@@ -19,8 +20,9 @@ const getVideo = async (ctx) =>
       await axios({
         method: 'post',
         url: `http://${process.env.GATEWAY_HOST}:${process.env.GATEWAY_PORT}/${process.env.GATEWAY_HISTORY_PATH}`,
+        headers: { 'g-token': process.env.GATEWAY_TOKEN },
         data: {
-          userId: 3,
+          userId,
           videoId: ctx.params.id
         }
       });
